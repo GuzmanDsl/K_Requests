@@ -11,7 +11,7 @@
 
     <main>
         <form action="" id="chore-form">
-            <fieldset>
+            <fieldset id="chore-fs">
                 <legend>
                     Chores Request
                 </legend>
@@ -27,8 +27,14 @@
 
                 <label for="date">Date</label>
                 <input type="date">
+
+                <!-- Time Selector -->
+                 <label for="time">Time</label>
+                 <input type="time">
             </fieldset>
 
+
+            <div onclick="submit" id="submitbtn">Submit</div>
         </form>
     </main>
 </body>

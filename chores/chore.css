@@ -1,4 +1,56 @@
+/* Defining Variables */
+:root{
+  --primary-color: #b0559c;
+  --secondary-color: #55b069;
+  --special: #e3ea7e;
+}
+
+
+main{
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+
 #chore-form{
+    width: 20rem;
+    border: 3px solid var(--special);
+    padding: 20px;
+    justify-self: center;
+    border-radius: 30px;
+    corner-shape: bevel;
+   
+    background-color: var(--secondary-color);
+
+}
+
+/* Chore type fieldset */
+#chore-fs{
+    padding: 30px;
     display: flex;
     flex-direction: column;
+     border-radius: 30px;
+    corner-shape: bevel;
+   
+    background-color: white;
 }
+
+legend{
+    font-size: 1.5rem;
+}
+
+#submitbtn{
+    margin-top: 10px;
+    height: 3rem;
+    width: 10rem;
+    background-color: var(--primary-color);
+    border-radius: 20px;
+    justify-self: center;
+    text-align: center;
+    padding-top: 1rem;
+    box-sizing: border-box;
+    box-shadow: 1px 3px 5px red;
+
+    cursor;
+}
+
