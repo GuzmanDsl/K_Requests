@@ -29,7 +29,7 @@ main{
     padding: 30px;
     display: flex;
     flex-direction: column;
-     border-radius: 30px;
+    border-radius: 25px;
     corner-shape: bevel;
    
     background-color: white;
@@ -51,6 +51,6 @@ legend{
     box-sizing: border-box;
     box-shadow: 1px 3px 5px red;
 
-    cursor;
+    cursor: pointer;
 }
 
