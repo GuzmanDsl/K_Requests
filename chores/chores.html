@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chores Request</title>
     <link rel="stylesheet" href="chore.css">
 </head>
+
 <body>
-    
+
 
     <main>
+
         <form action="" id="chore-form">
             <fieldset id="chore-fs">
-                <legend>
-                    Chores Request
-                </legend>
+                <h3 style="text-align: center;
+             ">Chores Request</h3>
 
+
+
+                <label for="sugar">Enter Sugar</label>
+                <input type="text" name="sugar" id="sugar">
                 <label for="type">Type:</label>
                 <select name="type" id="type">
                     <option value="dish">Wash Dishes</option>
@@ -23,14 +29,17 @@
                     <option value="cook">Cook for me</option>
 
                 </select>
-                
+
 
                 <label for="date">Date</label>
                 <input type="date" id="date">
 
                 <!-- Time Selector -->
-                 <label for="time" >Time</label>
-                 <input type="time" id="time">
+                <label for="time">Time</label>
+                <input type="time" id="time">
+
+                <label for="notes">Additional Notes:</label>
+                <textarea name="notes" id="notes"></textarea>
             </fieldset>
 
 
@@ -40,4 +49,5 @@
 
     <script src="chore.js"></script>
 </body>
+
 </html>
