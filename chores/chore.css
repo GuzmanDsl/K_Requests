@@ -3,6 +3,7 @@
   --primary-color: #b0559c;
   --secondary-color: #55b069;
   --special: #e3ea7e;
+  --pressed: #adb35e;
 }
 
 
@@ -40,17 +41,23 @@ legend{
 }
 
 #submitbtn{
-    margin-top: 10px;
-    height: 3rem;
-    width: 10rem;
-    background-color: var(--primary-color);
-    border-radius: 20px;
-    justify-self: center;
-    text-align: center;
-    padding-top: 1rem;
-    box-sizing: border-box;
-    box-shadow: 1px 3px 5px red;
-
-    cursor: pointer;
+    width: 150px;
+  padding: 10px 15px;
+  background-color: var(--primary-color); /* Default state background */
+  color: white;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer; /* Indicates it's clickable */
+  transition: background-color 0.3s ease; /* Smooth transition for hover */
+  /* Add other button styles as needed (border, font, etc) */
+  margin: 30px auto;
 }
 
+#submitbtn:hover {
+  background-color: #0056b3; /* Hover state background */
+}
+
+#submitbtn:active {
+  background-color: var(--pressed); /* Pressed/Active state background */
+  transform: translateY(2px); /* Optional: A slight "press" animation */
+}
