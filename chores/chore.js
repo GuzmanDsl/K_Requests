@@ -1,36 +1,26 @@
-submit_btm = document.getElementById("submitbtn")
-form = document.getElementById('chore-form')
+const submitBtn = document.getElementById("submitbtn");
 
+submitBtn.addEventListener("click", async (e) => {
+  e.preventDefault();
 
-submit_btm.addEventListener("click", function () {
+  const type = document.getElementById("type").value;
+  const date = document.getElementById("date").value;
+  const time = document.getElementById("time").value;
 
-    console.log("submit pressed")
+  try {
+    const res = await fetch("/send-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type, date, time }),
+    });
 
- 
-    // form.submit()
+    const data = await res.json();
+    console.log(data);
 
-    genMail()
-
-})
-
-
-function genMail() {
-
-    // Request values
-    const type = document.getElementById("type").value
-    const date = document.getElementById("date").value
-    const time = document.getElementById("time").value
-
-    email = ""
-
-    if (type === "dish") {
-        email = 
-        `You have a ${type} request.
-        Date: ${date}
-        Time: ${time} 
-        
-        Make sure to be ready and bring any necessary tools for the job!`
-    }
-
-    console.log(email)
-}
+    if (!res.ok) alert(data.error || "Failed to send");
+    else alert("Email sent!");
+  } catch (err) {
+    console.error(err);
+    alert("Server error");
+  }
+});
