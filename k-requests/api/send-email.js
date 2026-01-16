@@ -2,20 +2,41 @@ import nodemailer from "nodemailer";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Only POST allowed" });
+    return res.status(405).json({ ok: false, error: "Only POST allowed" });
   }
 
   try {
-    const { type, date, time, sugar } = req.body;
+    const { sugar, type, date, time, notes } = req.body || {};
 
-    if (!type || !date || !time) {
-      return res.status(400).json({ error: "Missing type/date/time" });
+    if (!sugar || !type || !date || !time) {
+      return res.status(400).json({
+        ok: false,
+        error: "Missing required fields: sugar, type, date, time",
+      });
+    }
+
+    // ✅ Check env vars (this is the #1 cause of Vercel 500s)
+    const required = [
+      "SMTP_HOST",
+      "SMTP_PORT",
+      "SMTP_SECURE",
+      "SMTP_USER",
+      "SMTP_PASS",
+      "MAIL_TO",
+    ];
+
+    const missing = required.filter((key) => !process.env[key]);
+    if (missing.length > 0) {
+      return res.status(500).json({
+        ok: false,
+        error: `Missing env vars: ${missing.join(", ")}`,
+      });
     }
 
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
-      secure: process.env.SMTP_SECURE === "true", // true for 465
+      secure: process.env.SMTP_SECURE === "true",
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
@@ -34,7 +55,6 @@ Notes:
 ${notes || "None"}
 `;
 
-
     const info = await transporter.sendMail({
       from: process.env.SMTP_USER,
       to: process.env.MAIL_TO,
@@ -44,7 +64,10 @@ ${notes || "None"}
 
     return res.status(200).json({ ok: true, messageId: info.messageId });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ ok: false, error: "Failed to send email" });
+    console.error("SEND EMAIL ERROR:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "Unknown server error",
+    });
   }
 }
