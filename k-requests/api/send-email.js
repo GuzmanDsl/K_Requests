@@ -1,12 +1,13 @@
-import nodemailer from "nodemailer";
+const nodemailer = require("nodemailer");
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   if (req.method !== "POST") {
     return res.status(405).json({ ok: false, error: "Only POST allowed" });
   }
 
   try {
-    const { sugar, type, date, time, notes } = req.body || {};
+    const body = req.body || {};
+    const { sugar, type, date, time, notes } = body;
 
     if (!sugar || !type || !date || !time) {
       return res.status(400).json({
@@ -15,8 +16,8 @@ export default async function handler(req, res) {
       });
     }
 
-    // ✅ Check env vars (this is the #1 cause of Vercel 500s)
-    const required = [
+    // ✅ Check environment variables
+    const requiredVars = [
       "SMTP_HOST",
       "SMTP_PORT",
       "SMTP_SECURE",
@@ -25,7 +26,8 @@ export default async function handler(req, res) {
       "MAIL_TO",
     ];
 
-    const missing = required.filter((key) => !process.env[key]);
+    const missing = requiredVars.filter((k) => !process.env[k]);
+
     if (missing.length > 0) {
       return res.status(500).json({
         ok: false,
@@ -36,7 +38,7 @@ export default async function handler(req, res) {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
-      secure: process.env.SMTP_SECURE === "true",
+      secure: process.env.SMTP_SECURE === "true", // true for 465
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
@@ -51,7 +53,7 @@ Sugar: ${sugar}
 Date: ${date}
 Time: ${time}
 
-Notes:
+Additional Notes:
 ${notes || "None"}
 `;
 
@@ -62,12 +64,16 @@ ${notes || "None"}
       text,
     });
 
-    return res.status(200).json({ ok: true, messageId: info.messageId });
+    return res.status(200).json({
+      ok: true,
+      message: "Email sent successfully",
+      messageId: info.messageId,
+    });
   } catch (err) {
     console.error("SEND EMAIL ERROR:", err);
     return res.status(500).json({
       ok: false,
-      error: err.message || "Unknown server error",
+      error: err.message || "Internal server error",
     });
   }
-}
+};
