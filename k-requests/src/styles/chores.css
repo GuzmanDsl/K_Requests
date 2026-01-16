@@ -1,0 +1,99 @@
+.choresMain {
+  min-height: 100dvh;
+  padding: 40px 18px;
+  display: grid;
+  place-items: center;
+}
+
+.choresCard {
+  width: 100%;
+  max-width: 520px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px;
+  backdrop-filter: blur(10px);
+}
+
+.choresTitle {
+  margin: 0;
+  font-size: 1.7rem;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+.choresSub {
+  margin: 8px 0 18px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.field label {
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.field input,
+.field select,
+.field textarea {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  padding: 12px 12px;
+  font-size: 1rem;
+  outline: none;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(176, 85, 156, 0.18);
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.submitBtn {
+  width: 100%;
+  margin-top: 6px;
+  padding: 12px;
+  border: none;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: white;
+  cursor: pointer;
+  background: linear-gradient(
+    20deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.submitBtn:hover {
+  transform: translateY(-1px);
+}
+
+.submitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.status {
+  margin-top: 14px;
+  text-align: center;
+  font-weight: 700;
+}

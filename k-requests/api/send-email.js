@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { type, date, time } = req.body;
+    const { type, date, time, sugar } = req.body;
 
     if (!type || !date || !time) {
       return res.status(400).json({ error: "Missing type/date/time" });
@@ -25,10 +25,15 @@ export default async function handler(req, res) {
     const subject = `Chore Request: ${type}`;
 
     const text = `You have a ${type} request.
+
+Sugar: ${sugar}
 Date: ${date}
 Time: ${time}
 
-Make sure to be ready and bring any necessary tools for the job!`;
+Notes:
+${notes || "None"}
+`;
+
 
     const info = await transporter.sendMail({
       from: process.env.SMTP_USER,

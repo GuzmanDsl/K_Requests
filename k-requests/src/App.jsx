@@ -2,15 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import "./styles/theme.css";
+import Chores from "./pages/Chores";
 
-function ChoresPlaceholder() {
-    return (
-        <main style={{ padding: 30 }}>
-            <h2>Chores Page</h2>
-            <p>This will be your email request form page.</p>
-        </main>
-    );
-}
 
 export default function App() {
     return (
@@ -18,7 +11,8 @@ export default function App() {
             <Navbar />
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/chores" element={<ChoresPlaceholder />} />
+                <Route path="/chores" element={<Chores />} />
+                
             </Routes>
         </BrowserRouter>
     );
