@@ -2,116 +2,143 @@ import { useState } from "react";
 import "../styles/chores.css";
 
 export default function Chores() {
-    const [sugar, setSugar] = useState("");
-    const [type, setType] = useState("dish");
-    const [date, setDate] = useState("");
-    const [time, setTime] = useState("");
-    const [notes, setNotes] = useState("");
-    const [status, setStatus] = useState("");
-    const [loading, setLoading] = useState(false);
+  const [sugar, setSugar] = useState("");
+  const [type, setType] = useState("dish");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [notes, setNotes] = useState("");
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
 
-        // Basic validation
-        if (!sugar || !type || !date || !time) {
-            setStatus("❌ Please fill out Sugar, Type, Date, and Time.");
-            return;
-        }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        setLoading(true);
-        setStatus("Sending request...");
+    // ✅ Basic validation
+    if (!sugar || !type || !date || !time) {
+      setStatus("❌ Please fill out Sugar, Type, Date, and Time.");
+      return;
+    }
 
-        try {
-            const res = await fetch("/api/send-email", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ sugar, type, date, time, notes }),
-            });
+    setLoading(true);
+    setStatus("Sending request...");
 
-            const data = await res.json();
+    try {
+      const res = await fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sugar, type, date, time, notes }),
+      });
 
-            if (!res.ok) {
-                setStatus(`❌ ${data.error || "Failed to send email"}`);
-            } else {
-                setStatus("✅ Request sent successfully!");
-                setSugar("");
-                setType("dish");
-                setDate("");
-                setTime("");
-                setNotes("");
-            }
-        } catch (err) {
-            console.error(err);
-            setStatus("❌ Network error. Could not reach server.");
-        } finally {
-            setLoading(false);
-        }
-    };
+      // ✅ SAFEST way: read as text first (because Vercel errors might return HTML)
+      const raw = await res.text();
+      let data;
 
-    return (
-        <main className="choresMain">
-            <form className="choresCard" onSubmit={handleSubmit}>
-                <h2 className="choresTitle">Chores Request</h2>
-                <p className="choresSub">
-                    Fill this out and it will send an email request.
-                </p>
+      // ✅ Try to parse JSON, otherwise fallback to raw text
+      try {
+        data = JSON.parse(raw);
+      } catch {
+        data = { error: raw };
+      }
 
-                <div className="field">
-                    <label>Enter Sugar</label>
-                    <input
-                        type="text"
-                        value={sugar}
-                        onChange={(e) => setSugar(e.target.value)}
-                        placeholder="Example: please please 😭"
-                    />
-                </div>
+      if (!res.ok) {
+        setStatus(`❌ ${data.error || "Server error"}`);
+        return;
+      }
 
-                <div className="field">
-                    <label>Type</label>
-                    <select value={type} onChange={(e) => setType(e.target.value)}>
-                        <option value="dish">Wash Dishes</option>
-                        <option value="trash">Take out trash</option>
-                        <option value="cook">Cook for me</option>
-                    </select>
-                </div>
+      setStatus("✅ Request sent successfully!");
 
-                <div className="twoCol">
-                    <div className="field">
-                        <label>Date</label>
-                        <input
-                            type="date"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                        />
-                    </div>
+      // ✅ Clear form after success
+      setSugar("");
+      setType("dish");
+      setDate("");
+      setTime("");
+      setNotes("");
+    } catch (err) {
+      console.error("Network error:", err);
+      setStatus("❌ Network error. Could not reach server.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                    <div className="field">
-                        <label>Time</label>
-                        <input
-                            type="time"
-                            value={time}
-                            onChange={(e) => setTime(e.target.value)}
-                        />
-                    </div>
-                </div>
+  return (
+    <main className="choresMain">
+      <form className="choresCard" onSubmit={handleSubmit}>
+        <h2 className="choresTitle">Chores Request</h2>
+        <p className="choresSub">
+          Fill this out and it will send an email request.
+        </p>
 
-                <div className="field">
-                    <label>Additional Notes</label>
-                    <textarea
-                        value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
-                        placeholder="Anything important to mention?"
-                        rows={4}
-                    />
-                </div>
+        {/* Sugar */}
+        <div className="field">
+          <label htmlFor="sugar">Enter Sugar</label>
+          <input
+            id="sugar"
+            type="text"
+            value={sugar}
+            onChange={(e) => setSugar(e.target.value)}
+            placeholder="Example: please please 😭"
+          />
+        </div>
 
-                <button className="submitBtn" type="submit" disabled={loading}>
-                    {loading ? "Sending..." : "Submit"}
-                </button>
+        {/* Type */}
+        <div className="field">
+          <label htmlFor="type">Type</label>
+          <select
+            id="type"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+          >
+            <option value="dish">Wash Dishes</option>
+            <option value="trash">Take out trash</option>
+            <option value="cook">Cook for me</option>
+          </select>
+        </div>
 
-                {status && <p className="status">{status}</p>}
-            </form>
-        </main>
-    );
+        {/* Date + Time */}
+        <div className="twoCol">
+          <div className="field">
+            <label htmlFor="date">Date</label>
+            <input
+              id="date"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          </div>
+
+          <div className="field">
+            <label htmlFor="time">Time</label>
+            <input
+              id="time"
+              type="time"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* Notes */}
+        <div className="field">
+          <label htmlFor="notes">Additional Notes</label>
+          <textarea
+            id="notes"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Anything important to mention?"
+            rows={4}
+          />
+        </div>
+
+        {/* Submit */}
+        <button className="submitBtn" type="submit" disabled={loading}>
+          {loading ? "Sending..." : "Submit"}
+        </button>
+
+        {/* Status */}
+        {status && <p className="status">{status}</p>}
+      </form>
+    </main>
+  );
 }
