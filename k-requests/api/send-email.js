@@ -1,13 +1,12 @@
-const nodemailer = require("nodemailer");
+import nodemailer from "nodemailer";
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ ok: false, error: "Only POST allowed" });
   }
 
   try {
-    const body = req.body || {};
-    const { sugar, type, date, time, notes } = body;
+    const { sugar, type, date, time, notes } = req.body || {};
 
     if (!sugar || !type || !date || !time) {
       return res.status(400).json({
@@ -16,7 +15,7 @@ module.exports = async (req, res) => {
       });
     }
 
-    // ✅ Check environment variables
+    // ✅ Check env vars
     const requiredVars = [
       "SMTP_HOST",
       "SMTP_PORT",
@@ -27,7 +26,6 @@ module.exports = async (req, res) => {
     ];
 
     const missing = requiredVars.filter((k) => !process.env[k]);
-
     if (missing.length > 0) {
       return res.status(500).json({
         ok: false,
@@ -38,7 +36,7 @@ module.exports = async (req, res) => {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
-      secure: process.env.SMTP_SECURE === "true", // true for 465
+      secure: process.env.SMTP_SECURE === "true",
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
@@ -76,4 +74,4 @@ ${notes || "None"}
       error: err.message || "Internal server error",
     });
   }
-};
+}
